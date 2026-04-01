@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Prompt Comparison Tool</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<h1>Prompt-to-Output Comparison Tool</h1>
+
+<form method="POST">
+
+<input type="text" name="prompt1" placeholder="Enter Prompt 1">
+
+<input type="text" name="prompt2" placeholder="Enter Prompt 2">
+
+<input type="text" name="prompt3" placeholder="Enter Prompt 3">
+
+<button type="submit">Generate AI Output</button>
+
+</form>
+
+
+{% if best_prompt %}
+
+<h2 class="best">🏆 Best Prompt: {{best_prompt}}</h2>
+
+{% endif %}
+
+
+<div class="container">
+
+{% for item in results %}
+
+<div class="card">
+
+<h3>Prompt</h3>
+<p>{{item.prompt}}</p>
+
+<h3>AI Output</h3>
+<p>{{item.output}}</p>
+
+<p class="score">Score: {{item.score}} / 10</p>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+
+<!-- Developer Section -->
+
+<div class="about">
+
+<h3>👨‍💻 Developer</h3>
+
+<p><strong>Name:</strong> Shamiul Islam</p>
+
+<p><strong>Email:</strong> shamiulislambayazid@gmail.com</p>
+
+<p>
+<strong>LinkedIn:</strong>
+<a href="https://www.linkedin.com/in/shamiul-islam-a2580b363" target="_blank">
+Visit Profile
+</a>
+</p>
+
+</div>
+
+
+</body>
+</html>
