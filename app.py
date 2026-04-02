@@ -47,12 +47,62 @@ def score_prompt(prompt, output):
     return score
 
 
+# 🧠 AI Prompt Judge Feature
+def judge_prompts(results):
+
+    comparison_text = ""
+
+    for i, r in enumerate(results, start=1):
+        comparison_text += f"""
+Prompt {i}: {r['prompt']}
+Output {i}: {r['output']}
+"""
+
+    judge_prompt = f"""
+You are an AI evaluator.
+
+Below are prompts and their outputs.
+
+Your task:
+1. Decide which prompt is the best.
+2. Explain briefly why.
+
+{comparison_text}
+
+Answer format:
+Best Prompt: <number>
+Reason: <short explanation>
+"""
+
+    response = requests.post(
+        url="https://openrouter.ai/api/v1/chat/completions",
+        headers={
+            "Authorization": f"Bearer {API_KEY}",
+            "Content-Type": "application/json"
+        },
+        data=json.dumps({
+            "model": "openai/gpt-4o-mini",
+            "messages": [
+                {
+                    "role": "user",
+                    "content": judge_prompt
+                }
+            ]
+        })
+    )
+
+    result = response.json()
+
+    return result["choices"][0]["message"]["content"]
+
+
 @app.route("/", methods=["GET","POST"])
 def index():
 
     results = []
     best_prompt = None
     best_score = -1
+    ai_judgement = None
 
     if request.method == "POST":
 
@@ -80,10 +130,15 @@ def index():
                     best_score = score
                     best_prompt = p
 
+        # 🤖 AI evaluation
+        if results:
+            ai_judgement = judge_prompts(results)
+
     return render_template(
         "index.html",
         results=results,
-        best_prompt=best_prompt
+        best_prompt=best_prompt,
+        ai_judgement=ai_judgement
     )
 
 
